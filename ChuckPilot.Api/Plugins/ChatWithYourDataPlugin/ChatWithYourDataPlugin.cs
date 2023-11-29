@@ -37,10 +37,20 @@ namespace ChuckPilot.Api.Plugins
             };
             chatCompletionsOptions.Messages.Add(new Azure.AI.OpenAI.ChatMessage(ChatRole.System, $"You are an assistant and you have to provide information about a person"));
 
+            //add the conversation history
+            History history = await HistoryManager.GetHistoryAsync(conversationId);
+            foreach (var msg in history.Messages)
+            {
+                chatCompletionsOptions.Messages.Add(new Azure.AI.OpenAI.ChatMessage(msg.role.ToLower() == "assistant" ? ChatRole.Assistant : ChatRole.User, msg.content));
+            }
+
             chatCompletionsOptions.Messages.Add(new Azure.AI.OpenAI.ChatMessage(ChatRole.User, userMessage));
 
             var response = await client.GetChatCompletionsAsync(Environment.GetEnvironmentVariable("AOAIDeploymentId"), chatCompletionsOptions);
             var message = response.Value.Choices[0].Message;
+
+            //update the history
+            await HistoryManager.UpdateHistoryAsync(userMessage, message.Content, conversationId);
 
             string messageText = Regex.Replace(message.Content, @"\[\w+\]", "");
 

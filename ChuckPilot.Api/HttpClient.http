@@ -1,4 +1,4 @@
-@conversationId = "6a0ee56f-092d-40c3-bf6c-f3c7bd6b6c20"
+@conversationId = "476310a0-a839-42e3-b63c-b4353f56e81e"
 
 POST http://localhost:7242/api/chuckchat
 Content-Type: application/json
@@ -13,7 +13,7 @@ POST http://localhost:7242/api/chuckchat
 Content-Type: application/json
 
 {
-    "Content" : "Chuck ha vinto qualche premio?",
+    "Content" : "ha vinto qualche premio?",
     "ConversationId" : {{conversationId}}
 }
 ###
