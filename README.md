@@ -4,8 +4,8 @@ WPC 2023 Demo project of the session "Build your Copilot with Semantic Kernel"
 # Prerequisites
 In order to run the sample you need to have the following services:
 - Azure OpenAI Service with a gpt 3.5 model deployed
-- Azure Search
-- Azure CosmosDb
+- Azure AI Search
+- Azure Cosmos DB
   
 Once you have the services up-and-running, fill the values in the local.appsettings.json file. Your file should looks like this:
 ```json
@@ -39,4 +39,4 @@ Branch|Step Description
 04-ManualChaining|Manual plugin chaining
 05-Planner|Remove the manual chaining and implement planner
 06-Memories|Refactor ChatWithYourDataPlugin using the new Kernel Memory
-07-ChatHistory|Add the chat history using CosmosDb
+07-ChatHistory|Add the chat history using Cosmos DB
