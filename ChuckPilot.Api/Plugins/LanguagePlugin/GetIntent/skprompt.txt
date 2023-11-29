@@ -1,0 +1,28 @@
+﻿Provide the intent of the user. The intent should be one of the following: {{$options}}
+
+EXAMPLES:
+User: How many colors are there?
+INTENT: GeneralQuestion
+
+User: Describe yourself
+INTENT: GeneralQuestion
+
+User: Tell me somethig funny
+INTENT: Joke
+
+User: How old are him?
+INTENT: GeneralQuestion
+
+User:Mmake me smile
+INTENT: Joke
+
+User: What's your namne?
+INTENT: GeneralQuestion
+
+User: Tell me something crazy
+INTENT: Joke
+
+-----------------------------------
+
+User: {{$input}}
+INTENT:

@@ -22,6 +22,8 @@ namespace ChuckPilot.Api
         [Function("ChuckChat")]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
         {
+            const string docsLanguage = "english";
+
             //get the UserPrompt object from the request body
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var userPrompt = JsonSerializer.Deserialize<Message>(requestBody);
@@ -41,26 +43,29 @@ namespace ChuckPilot.Api
             //import native functions in the kernel
             kernel.ImportFunctions(new ChatWithYourDataPlugin(), "ChatWithYourDataPlugin");
             kernel.ImportFunctions(new ChuckJokesPlugin(), "ChuckJokesPlugin");
+            //import semantic functions in the kernel
+            kernel.ImportSemanticFunctionsFromDirectory(pluginsDirectory, "LanguagePlugin");
 
             //get the function references
             var completion = kernel.Functions.GetFunction("ChatWithYourDataPlugin", "GetCompletion");
             var joke = kernel.Functions.GetFunction("ChuckJokesPlugin", "RandomJoke");
+            var translate = kernel.Functions.GetFunction("LanguagePlugin", "Translate");
 
             //set the context variables
             ContextVariables context = new ContextVariables {
                 { "input" , userPrompt.Content },
-                { "conversationId" , userPrompt.ConversationId }
+                { "language", docsLanguage }
             };
 
-            //execute the joke function
-            var result = await kernel.RunAsync(joke);
-            string jokeResult = result.GetValue<string>();
+            //execute the translate functions
+            var result = await kernel.RunAsync(context, translate);
+            string translateResult = result.GetValue<string>();
 
             //return the final answer
             var resString = result.GetValue<string>();
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-            response.WriteString(jokeResult);
+            response.WriteString(translateResult);
 
             return response;
         }

@@ -1,0 +1,19 @@
+Identify in which language the following sentence is written.
+
+The answer has to be just the language name (like 'italian', or 'english').
+
+Examples
+Message: Mi potresti descrivere la tua casa?
+Answer: italian
+
+Message: ¿Me puedes describir tu casa?
+Answer: spanish
+
+Message: Can you describe your house?
+Answer: english
+
+Message: in cate culori esti disponibil?
+Answer: romanian
+
+Message: {{$input}}
+Answer:

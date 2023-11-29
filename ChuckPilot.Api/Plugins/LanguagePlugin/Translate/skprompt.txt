@@ -1,0 +1,5 @@
+Translate the input below into {{$language}}
+
+{{$input}}
+
+Translation:

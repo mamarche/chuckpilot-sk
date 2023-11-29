@@ -5,3 +5,11 @@ Content-Type: application/json
     "Content" : "when was Chuck born?"
 }
 ###
+
+POST http://localhost:7242/api/chuckchat
+Content-Type: application/json
+
+{
+    "Content" : "mi racconti un aneddoto divertente?"
+}
+###
