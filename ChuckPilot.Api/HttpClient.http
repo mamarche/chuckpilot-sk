@@ -1,0 +1,7 @@
+POST http://localhost:7166/api/chuckchat
+Content-Type: application/json
+
+{
+    "Content" : "quando è nato Chuck?"
+}
+###
