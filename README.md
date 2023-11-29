@@ -1,6 +1,33 @@
 # chuckpilot-sk
 WPC 2023 Demo project of the session "Build your Copilot with Semantic Kernel"
 
+# Prerequisites
+In order to run the sample you need to have the following services:
+- Azure OpenAI Service with a gpt 3.5 model deployed
+- Azure Search
+- Azure CosmosDb
+  
+Once you have the services up-and-running, fill the values in the local.appsettings.json file. Your file should looks like this:
+```json
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+
+    "AOAIKey": "[YOUR AZURE OPENAI KEY HERE]",
+    "AOAIEndpoint": "[YOUR AZURE OPENAI ENDPOINT HERE]",
+    "AOAIApiVersion": "2023-07-01-preview",
+    "AOAIDeploymentId": "[YOUR GPT MODEL DEPLOYMENT NAME HERE]",
+    "SearchEndpoint": "[YOUR AZURE SEARCH ENDPOINT HERE]",
+    "SearchKey": "[YOUR AZURE SEARCH KEY HERE]",
+    "SearchIndex": "test01",
+    "CosmosEndpoint": "[YOUR COSMOSDB ENDPOINT HERE]",
+    "CosmosKey": "[YOUR COSMOSDB KEY HERE]"
+  }
+}
+```
+
 # Demo Steps
 
 Branch|Step Description
