@@ -7,6 +7,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Orchestration;
+using Microsoft.SemanticKernel.Planners;
 
 namespace ChuckPilot.Api
 {
@@ -46,12 +47,72 @@ namespace ChuckPilot.Api
             //import semantic functions in the kernel
             kernel.ImportSemanticFunctionsFromDirectory(pluginsDirectory, "LanguagePlugin");
 
-            //get the function references
-            var joke = kernel.Functions.GetFunction("ChuckJokesPlugin", "RandomJoke");
-            var completion = kernel.Functions.GetFunction("ChatWithYourDataPlugin", "GetCompletion");
-            var detect = kernel.Functions.GetFunction("LanguagePlugin", "DetectLanguage");
-            var translate = kernel.Functions.GetFunction("LanguagePlugin", "Translate");
-            var intent = kernel.Functions.GetFunction("LanguagePlugin", "GetIntent");
+            ////get the function references
+            //var joke = kernel.Functions.GetFunction("ChuckJokesPlugin", "RandomJoke");
+            //var completion = kernel.Functions.GetFunction("ChatWithYourDataPlugin", "GetCompletion");
+            //var detect = kernel.Functions.GetFunction("LanguagePlugin", "DetectLanguage");
+            //var translate = kernel.Functions.GetFunction("LanguagePlugin", "Translate");
+            //var intent = kernel.Functions.GetFunction("LanguagePlugin", "GetIntent");
+
+            ////set the context variables
+            //ContextVariables context = new ContextVariables {
+            //    { "input" , userPrompt.Content },
+            //    { "options" , "GeneralQuestion , Joke" },
+            //    { "conversationId" , userPrompt.ConversationId },
+            //    { "language", docsLanguage }
+            //};
+
+            ////execute the language detection function
+            //var result = await kernel.RunAsync(context, detect);
+            //string userLanguage = result.GetValue<string>();
+            //string userMessage = userPrompt.Content;
+
+            ////reset the "input" variable to the user message
+            //context["input"] = userMessage;
+
+            ////if the language of the user question is different from the language of the documents (english),
+            ////translate into the correct language
+            //if (userLanguage != docsLanguage)
+            //{
+            //    //execute the translate function
+            //    result = await kernel.RunAsync(context, translate);
+            //    userMessage = result.GetValue<string>();
+            //}
+
+            ////execute the intent function to understand the user intent
+            //result = await kernel.RunAsync(context, intent);
+
+            ////reset the "input" variable to the user message
+            //context["input"] = userMessage;
+
+            ////if the user wants to get a joke run the joke function,
+            ////otherwise run the completion function to provide an answer based on the documents
+            //if (result.GetValue<string>() == "Joke")
+            //{
+            //    result = await kernel.RunAsync(context, joke);
+            //}
+            //else
+            //{
+            //    result = await kernel.RunAsync(context, completion);
+            //}
+
+            ////if the language of the user question is different from the language of the documents (english),
+            ////translate into the user language
+            //if (userLanguage != docsLanguage)
+            //{
+            //    context["language"] = userLanguage;
+            //    result = await kernel.RunAsync(context, translate);
+            //}
+
+            ////return the final answer
+            //var resString = result.GetValue<string>();
+            //var response = req.CreateResponse(HttpStatusCode.OK);
+            //response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            //response.WriteString(resString);
+
+            //return response;
+
+            var planner = new StepwisePlanner(kernel);
 
             //set the context variables
             ContextVariables context = new ContextVariables {
@@ -61,50 +122,14 @@ namespace ChuckPilot.Api
                 { "language", docsLanguage }
             };
 
-            //execute the language detection function
-            var result = await kernel.RunAsync(context, detect);
-            string userLanguage = result.GetValue<string>();
-            string userMessage = userPrompt.Content;
-
-            //reset the "input" variable to the user message
-            context["input"] = userMessage;
-
-            //if the language of the user question is different from the language of the documents (english),
-            //translate into the correct language
-            if (userLanguage != docsLanguage)
-            {
-                //execute the translate function
-                result = await kernel.RunAsync(context, translate);
-                userMessage = result.GetValue<string>();
-            }
-
-            //execute the intent function to understand the user intent
-            result = await kernel.RunAsync(context, intent);
-
-            //reset the "input" variable to the user message
-            context["input"] = userMessage;
-
-            //if the user wants to get a joke run the joke function,
-            //otherwise run the completion function to provide an answer based on the documents
-            if (result.GetValue<string>() == "Joke")
-            {
-                result = await kernel.RunAsync(context, joke);
-            }
-            else
-            {
-                result = await kernel.RunAsync(context, completion);
-            }
-
-            //if the language of the user question is different from the language of the documents (english),
-            //translate into the user language
-            if (userLanguage != docsLanguage)
-            {
-                context["language"] = userLanguage;
-                result = await kernel.RunAsync(context, translate);
-            }
+            var plan = planner.CreatePlan($"Answer to the user question based on the user intent. " +
+                $"Always answer in the same language of the user using ONLY the data provided. " +
+                $"The data provided is in {docsLanguage}. " +
+                $"The user question is: {userPrompt.Content}");
+            var planResult = await kernel.RunAsync(context, plan);
 
             //return the final answer
-            var resString = result.GetValue<string>();
+            var resString = planResult.GetValue<string>();
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
             response.WriteString(resString);
