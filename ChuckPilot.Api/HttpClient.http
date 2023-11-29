@@ -1,8 +1,11 @@
+@conversationId = "6a0ee56f-092d-40c3-bf6c-f3c7bd6b6c20"
+
 POST http://localhost:7242/api/chuckchat
 Content-Type: application/json
 
 {
-    "Content" : "when was Chuck born?"
+    "Content" : "Quando è nato Chuck?",
+    "ConversationId" : {{conversationId}}
 }
 ###
 
@@ -10,6 +13,16 @@ POST http://localhost:7242/api/chuckchat
 Content-Type: application/json
 
 {
-    "Content" : "mi racconti un aneddoto divertente?"
+    "Content" : "Chuck ha vinto qualche premio?",
+    "ConversationId" : {{conversationId}}
+}
+###
+
+POST http://localhost:7242/api/chuckchat
+Content-Type: application/json
+
+{
+    "Content" : "mi racconti un aneddoto divertente?",
+    "ConversationId" : {{conversationId}}
 }
 ###
