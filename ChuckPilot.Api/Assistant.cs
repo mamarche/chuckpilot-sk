@@ -14,7 +14,7 @@ namespace ChuckPilot.Api
             _logger = loggerFactory.CreateLogger<Assistant>();
         }
 
-        [Function("Assistant")]
+        [Function("ChuckChat")]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
