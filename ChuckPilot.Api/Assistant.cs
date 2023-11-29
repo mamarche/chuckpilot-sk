@@ -40,9 +40,11 @@ namespace ChuckPilot.Api
 
             //import native functions in the kernel
             kernel.ImportFunctions(new ChatWithYourDataPlugin(), "ChatWithYourDataPlugin");
+            kernel.ImportFunctions(new ChuckJokesPlugin(), "ChuckJokesPlugin");
 
             //get the function references
             var completion = kernel.Functions.GetFunction("ChatWithYourDataPlugin", "GetCompletion");
+            var joke = kernel.Functions.GetFunction("ChuckJokesPlugin", "RandomJoke");
 
             //set the context variables
             ContextVariables context = new ContextVariables {
@@ -51,14 +53,14 @@ namespace ChuckPilot.Api
             };
 
             //execute the joke function
-            var result = await kernel.RunAsync(context, completion);
-            string completionResult = result.GetValue<string>();
+            var result = await kernel.RunAsync(joke);
+            string jokeResult = result.GetValue<string>();
 
             //return the final answer
             var resString = result.GetValue<string>();
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-            response.WriteString(completionResult);
+            response.WriteString(jokeResult);
 
             return response;
         }
